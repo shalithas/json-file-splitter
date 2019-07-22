@@ -1,4 +1,5 @@
 var fs = require("fs");
+const args = require('yargs').argv;
 
 /**
  * Returns an array with arrays of the given size.
@@ -21,16 +22,26 @@ function chunkArray(myArray, chunk_size){
 }
 
 console.log("START");
-var name = "rankings_users_2019-07-22-07-49-09-22-3";
+
+if(!args.file){
+    console.error('No file name given');
+    return false;
+}
+
+var size = 100;
+
+if(args.size){
+    size = args.size;
+}
+
+var name = args.file.replace('.json', '');
 var content = fs.readFileSync(name+".json");
 content = JSON.parse(content);
 users = content.users;
 
-var arraySet = chunkArray(users, 10);
+var arraySet = chunkArray(users, size);
 
 arraySet.map((data, index) => {
-    console.log(data.length);
-    console.log(name+(index+1)+'.json');
     var file = content;
     file.users = data;
     file = JSON.stringify(file)
